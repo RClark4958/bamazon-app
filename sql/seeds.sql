@@ -1,4 +1,4 @@
-INSERT INTO products(ProductName, DepartmentName, Price, StockQuantity)
+INSERT INTO products(product_name, department_id, price, stock_quantity)
 VALUES ("Nintendo GameBoy", "Nintendo Hardware", 99.99, 50),
     ("Sega DreamGear", "Sega Hardware", 149.99, 50),
     ("Super Nintendo", "Nintendo Hardware", 149.99, 75),
