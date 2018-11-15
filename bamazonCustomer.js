@@ -29,11 +29,14 @@ var promptCustomer = function(res) {
     inquirer.prompt([{
         type: 'input',
         name: 'choice',
-        message: 'What would you like to buy? *Exit with Q*'
+        message: "Please enter the name of the product you would like to purchase." + "\n" + "[Q exits] " + "\n"
     }]).then(function(answer) {
         var correct = false;
+        if (answer.choice.toUpperCase() == "Q"){
+            process.exit();
+        }
         for (var i = 0; i < res.length; i++){
-            if(res[i].product_name==answer.choice) {
+            if (res[i].product_name.toUpperCase() == answer.choice.toUpperCase()) {
                 correct = true;
                 var product = answer.choice;
                 var id = i;
@@ -42,17 +45,18 @@ var promptCustomer = function(res) {
                     name: "quant",
                     message: "How many would you like to buy?",
                     validate: function(value) {
-                        if(isNaN(value) == false) {
+                        if (isNaN(value) == false) {
                             return true;
                         } else {
                             return false;
                         }
                     }
                 }).then(function(answer) {
-                    if((res[id].stock_quantity - answer.quant) > 0) {
+                    if ((res[id].stock_quantity - answer.quant) > 0) {
                         connection.query("UPDATE products SET stock_quantity='" + (res[id].stock_quantity - answer.quant)+"' WHERE product_name='" + product + "'", function(err, res2) {
-                            console.log("Purchase Successful");
-                            makeTable(); 
+                            console.log("\n" + "Purchase Successful" + "\n");
+                            makeTable();
+                            console.log("Your total cost was $" + answer.quant * res[id].price + "\n"); 
                         })
                     } else {
                         console.log("Oops, we can't do that for you");
@@ -60,6 +64,10 @@ var promptCustomer = function(res) {
                     }
                 })
             }
+        }
+        if (i==res.length && correct==false) {
+            console.log("I'm sorry, I don't know what that is");
+            promptCustomer(res);
         }
     })
 }
